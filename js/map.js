@@ -18,3 +18,10 @@ var offerTypes = [
 'houses',
 'bungalo'
 ];
+
+// строковый массив времени (checkin, checkout)
+var offerTimes = [
+'12:00',
+'13:00',
+'14:00'
+];
