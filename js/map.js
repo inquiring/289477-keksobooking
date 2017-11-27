@@ -25,3 +25,13 @@ var offerTimes = [
 '13:00',
 '14:00'
 ];
+
+// строковый массив преимуществ домов
+var offerFeatures = [
+'wifi',
+'dishwasher',
+'parking',
+'washer',
+'elevator',
+'conditioner'
+];
