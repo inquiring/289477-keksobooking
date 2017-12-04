@@ -56,6 +56,11 @@ var map = document.querySelector('.map');
 var offerTemplate = document.querySelector('template').content.querySelector('.map__card');
 var offersFragment = document.createDocumentFragment();
 
+// Создание фрагмента документа и заполнение его разметкой по шаблону
+// Данный фрагмент создает на карте пины (<button><img></button>)
+var pinsContainer = map.querySelector('.map__pins');
+var pinsFragment = document.createDocumentFragment();
+
 // Функция, возвращает случайное целое число между min и max(включительно)
 // min - минимально допустимое число
 // max - максимально допустимое число
@@ -125,7 +130,6 @@ var featureAdd = function (array) {
 };
 
 // Главная функция, возвращает массив из 8 сгенерированных объектов с готовыми предложениями по недвижимости
-
 var offers = [];
 var fillOffers = function () {
 
@@ -178,12 +182,34 @@ var renderOffer = function (data) {
   capacity.textContent = data.offer.rooms + ' комнаты для ' + data.offer.guests + ' гостей';
   stayTime.textContent = 'Заезд после ' + data.offer.checkin + ', выезд до ' + data.offer.checkout;
   description.textContent = data.offer.description;
-  cleanupChildNodes(featuresList);
-  featuresList.appendChild(featureAdd(data.offer.features));
+  // cleanupChildNodes(featuresList);
+  // featuresList.appendChild(featureAdd(data.offer.features));
 
   return offerElement;
 
 };
+// Данный фрагмент создает на карте пины (<button><img></button>)
+
+var createPin = function (data) {
+  for(var i = 0; i < 8; i++) {
+    var pin = document.createElement('button');
+    pin.className = 'map__pin';
+    var pinShiftX = 20;// смещение пина по X с учетом его размеров (в px)
+    var pinShiftY = 60;// смещение пина по Y с учетом его размеров (в px)
+    pin.style.left = data[i].location.x + pinShiftX + 'px';
+    pin.style.top = data[i].location.y + pinShiftY + 'px';
+
+    var img = document.createElement('img');
+    img.src = data[i].author.avatar;
+    img.width = 40;
+    img.height = 40;
+    img.draggable = false;// нельзя перетащить элемент
+
+    pin.appendChild(img);
+    pinsFragment.appendChild(pin);
+  }
+  return pinsContainer.appendChild(pinsFragment);
+}
 
 var appendOffer = function () {
   var fragment = document.createDocumentFragment();
@@ -200,3 +226,4 @@ map.classList.remove('map--faded');
 
 fillOffers();
 appendOffer();
+createPin(offers);
