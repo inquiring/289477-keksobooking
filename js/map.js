@@ -29,7 +29,7 @@ var OFFER_TITLES = [
 // строковый массив типов домов
 var OFFER_TYPES = [
   'flat',
-  'houses',
+  'house',
   'bungalo'
 ];
 
@@ -52,8 +52,9 @@ var OFFER_FEATURES = [
 
 // Получение и отображение на сайте карты с пользовательскими пинами
 var map = document.querySelector('.map');
+var mapFilters = map.querySelector('.map__filters-container');
 // Найдем шаблон, который мы будем копировать
-var offerTemplate = document.querySelector('template').content.querySelector('.map__card');
+var offerTemplate = document.querySelector('template').content;
 var offersFragment = document.createDocumentFragment();
 
 // Создание фрагмента документа и заполнение его разметкой по шаблону
@@ -68,23 +69,16 @@ var getRandomInteger = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-// Функция, перводит на русский язык тип жилья
-// key — на вход принимается элемент для перевода
-// translator — переведенное значение
-var translatorInRussian = function (key) {
-  var translator = '';
-  switch (key) {
-    case 'flat':
-      translator = 'Квартира';
-      break;
-    case 'house':
-      translator = 'Дом';
-      break;
-    case 'bungalo':
-      translator = 'Бунгало';
-      break;
+var TYPES = {
+  flat: {
+    ru: 'Квартира'
+  },
+  bungalo: {
+    ru: 'Бунгало'
+  },
+  house: {
+    ru: 'Дом'
   }
-  return translator;
 };
 
 // Функция, удаляющая все дочерние элементы (теги) заданного родительского узла
@@ -127,10 +121,26 @@ var featureAdd = function (array) {
     // добавление класса с модификатором
     featuresFragment.appendChild(featureTag);
   }
+  return featuresFragment;
+};
+
+var getRandomFeatures = function () {
+  var arr = [];
+  OFFER_FEATURES.forEach(function (item) {
+    var isPush = getRandomInteger(0, 1);
+    if (isPush === 1) {
+      arr.push(item);
+    }
+  });
+  if (arr.length === 0) {
+    arr.push(OFFER_FEATURES[getRandomInteger(0, (OFFER_FEATURES.length - 1))]);
+  }
+  return arr;
 };
 
 // Главная функция, возвращает массив из 8 сгенерированных объектов с готовыми предложениями по недвижимости
 var offers = [];
+
 var fillOffers = function () {
 
   for (var i = 0; i < OFFERS_COUNT; i++) {
@@ -146,7 +156,7 @@ var fillOffers = function () {
     offers[i].offer.guests = getRandomInteger(MIN_GUEST, MAX_GUEST);
     offers[i].offer.checkin = OFFER_TIMES[getRandomInteger(0, OFFER_TIMES.length - 1)];
     offers[i].offer.checkout = OFFER_TIMES[getRandomInteger(0, OFFER_TIMES.length - 1)];
-    offers[i].offer.features = getRandomInteger(OFFER_FEATURES);
+    offers[i].offer.features = getRandomFeatures();
     offers[i].offer.description = '';
     offers[i].offer.photos = [];
 
@@ -178,20 +188,20 @@ var renderOffer = function (data) {
   title.textContent = data.offer.title;
   address.textContent = data.offer.address;
   price.innerHTML = data.offer.price + '&#x20bd;/ночь';
-  type.textContent = translatorInRussian(data.offer.type);
+  type.textContent = TYPES[data.offer.type].ru;
   capacity.textContent = data.offer.rooms + ' комнаты для ' + data.offer.guests + ' гостей';
   stayTime.textContent = 'Заезд после ' + data.offer.checkin + ', выезд до ' + data.offer.checkout;
   description.textContent = data.offer.description;
-  // cleanupChildNodes(featuresList);
-  // featuresList.appendChild(featureAdd(data.offer.features));
+  cleanupChildNodes(featuresList);
+  featuresList.appendChild(featureAdd(data.offer.features));
 
   return offerElement;
 
 };
-// Данный фрагмент создает на карте пины (<button><img></button>)
 
+// Функция, создает на карте пины (<button><img></button>)
 var createPin = function (data) {
-  for(var i = 0; i < 8; i++) {
+  for (var i = 0; i < OFFERS_COUNT; i++) {
     var pin = document.createElement('button');
     pin.className = 'map__pin';
     var pinShiftX = 20;// смещение пина по X с учетом его размеров (в px)
@@ -208,22 +218,24 @@ var createPin = function (data) {
     pin.appendChild(img);
     pinsFragment.appendChild(pin);
   }
-  return pinsContainer.appendChild(pinsFragment);
-}
+  pinsContainer.appendChild(pinsFragment);
+};
 
 var appendOffer = function () {
   var fragment = document.createDocumentFragment();
 
-  // Отрисуем наш шаблон в документ
-  for (var j = 0; j < OFFERS_COUNT; j++) {
-    fragment.appendChild(renderOffer(offers[j]));
-  }
+  fragment.appendChild(renderOffer(offers[0]));
+
   offersFragment.appendChild(fragment);
+
+  mapFilters.parentElement.insertBefore(offersFragment, mapFilters);
 };
 
 
 map.classList.remove('map--faded');
 
 fillOffers();
+
 appendOffer();
+
 createPin(offers);
