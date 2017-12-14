@@ -11,7 +11,6 @@ var MAX_X = 900;
 var MIN_Y = 135;
 var MAX_Y = 500;
 var OFFERS_COUNT = 8;
-var ENTER_KEYCODE = 13;
 var ESC_KEYCODE = 27;
 
 // строковый массив описаний домов
@@ -53,14 +52,14 @@ var OFFER_FEATURES = [
 // Получение и отображение на сайте карты с пользовательскими пинами
 var map = document.querySelector('.map');
 var mapFiltersContainer = map.querySelector('.map__filters-container');
-// Найдем шаблон, который мы будем копировать
-var offerTemplate = document.querySelector('template').content;
-var offersFragment = document.createDocumentFragment();
+// Найдем шаблон, который мы будем копировать (только из map__card)
+var offerTemplate = document.querySelector('template').content.querySelector('.map__card');
+// var offersFragment = document.createDocumentFragment();
 
 // Создание фрагмента документа и заполнение его разметкой по шаблону
 // Данный фрагмент создает на карте пины (<button><img></button>)
 var mapPins = map.querySelector('.map__pins');
-var pinsFragment = document.createDocumentFragment();
+// var pinsFragment = document.createDocumentFragment();
 
 // Функция, возвращает случайное целое число между min и max(включительно)
 // min - минимально допустимое число
@@ -142,7 +141,6 @@ var getRandomFeatures = function () {
 var offers = [];
 
 var fillOffers = function () {
-
   for (var i = 0; i < OFFERS_COUNT; i++) {
     offers[i] = {};
     offers[i].author = {};
@@ -166,7 +164,6 @@ var fillOffers = function () {
 
     offers[i].offer.address = offers[i].location.x + ', ' + offers[i].location.y;
   }
-  return offers;
 };
 
 var renderOffer = function (data) {
@@ -202,9 +199,10 @@ var renderOffer = function (data) {
 // Функция, создает на карте пины (<button><img></button>)
 var createPin = function () {
   var pinFragment = document.createDocumentFragment();
-  for (var i = 0; i < OFFERS_COUNT; i++) {
+  for (var i = 1; i < OFFERS_COUNT; i++) {
     var buttonPin = document.createElement('button');
     buttonPin.className = 'map__pin';
+    // buttonPin.data = i;
     buttonPin.setAttribute('data-num', i);
     buttonPin.setAttribute('tabinex', '0');
     var pinShiftX = 20; // смещение пина по X с учетом его размеров (в px)
@@ -216,7 +214,7 @@ var createPin = function () {
     imgPin.src = offers[i].author.avatar;
     imgPin.width = 40;
     imgPin.height = 40;
-    imgPin.draggable = false; // нельзя перетащить элемент
+    // imgPin.draggable = false; // нельзя перетащить элемент
 
     buttonPin.appendChild(imgPin);
     pinFragment.appendChild(buttonPin);
@@ -224,27 +222,12 @@ var createPin = function () {
   return pinFragment;
 };
 
-
-var appendOffer = function (number) {
-  var fragment = document.createDocumentFragment();
-
-  fragment.appendChild(renderOffer(offers[number]));
-
-  offersFragment.appendChild(fragment);
-
-  mapFiltersContainer.parentElement.insertBefore(offersFragment, mapFiltersContainer);
-};
-
-
-
-
 // Получение пользовательского пина
 var mapPinMain = document.querySelector('.map__pin--main');
 // Получение пользовательской формы
 var noticeForm = document.querySelector('.notice__form');
 //
 var fieldsetNoticeForm = noticeForm.querySelectorAll('fieldset');
-
 
 // функция удаления класса
 var removeClass = function (element, className) {
@@ -271,17 +254,14 @@ var removeAttributeForm = function (elements) {
 
 // получение номера из data - атрибута
 var getDataNum = function (dataNum) {
-  return dataNum.getAttribute('data-num');
+  return parseInt(dataNum.data, 10);
 };
 
-var renderControlPanel = function (number) {
-  // var fragment = document.createDocumentFragment();
-  // fragment.appendChild(renderOffer(offers[number]));
-  // offersFragment.appendChild(fragment);
-  // map.insertBefore(offersFragment, mapFiltersContainer);
+var renderOfferPin = function (number) {
 
-  var panel = renderOffer(offers[number]);
-  map.insertBefore(panel, mapFiltersContainer);
+  var offer = renderOffer(offers[number]);
+
+  map.insertBefore(offer, mapFiltersContainer);
 
 
   var mapCard = document.querySelector('.map__card');
@@ -290,7 +270,7 @@ var renderControlPanel = function (number) {
   document.addEventListener('keydown', onKeyEscPress);
 };
 
-var removeControlPanel = function () {
+var removeOfferPin = function () {
   var controlPanels = map.querySelectorAll('article');
   for (var i = controlPanels.length - 1; i >= 0; i--) {
     map.removeChild(controlPanels[i]);
@@ -299,10 +279,25 @@ var removeControlPanel = function () {
 
 var deactivatePin = function (element) {
   var statusPin = element.querySelector('.map__pin--active');
+
   if (statusPin) {
     removeClass(statusPin, 'map__pin--active');
-    removeControlPanel();
+    removeOfferPin();
+
   }
+};
+
+var onPinClick = function (evt) {
+
+  evt.preventDefault();
+  var pin = evt.currentTarget;
+
+  deactivatePin(mapPins);
+
+  addClass(pin, 'map__pin--active');
+
+  renderOfferPin(getDataNum(pin));
+
 };
 
 
@@ -314,28 +309,19 @@ var onPinMainClick = function () {
   removeClass(noticeForm, 'notice__form--disabled');
   // активация полей формы
   removeAttributeForm(fieldsetNoticeForm);
-  fillOffers();
-  map.appendChild(createPin());
+  // в блок mapPins добавляются Пины
+  mapPins.appendChild(createPin());
 
   // найти и записать в переменную все "map__pin"
-  var pinElements = mapPins.querySelectorAll('.map__pin');
-  for (var i = 0; i < pinElements.length; i++) {
-    // если не главный пин, то повесить ожидание события по клику и энтеру
-    if (!(pinElements[i].classList.contains('map__pin--main'))) {
-      pinElements[i].addEventListener('mouseup', onPinClick);
-      pinElements[i].addEventListener('keypress', onPinKeyEnter);
-    }
+  var pinElements = mapPins.querySelectorAll('.map__pin:not(map__pin--main)');
+
+  for (var i = 1; i < pinElements.length; i++) {
+    pinElements[i].data = i;
+    pinElements[i].addEventListener('click', onPinClick);
   }
-  mapPinMain.addEventListener('mouseup', onPinMainClick);
-};
 
-var onPinClick = function (event) {
-  event.preventDefault();
-  var pin = event.currentTarget;
-  deactivatePin(mapPins);
-  addClass(pin, 'map__pin--active');
-  renderControlPanel(getDataNum(pin));
-
+  // отключаем событие чтобы не запустить отрисовку пинов при повторном нажатие главный пин
+  mapPinMain.removeEventListener('mouseup', onPinMainClick);
 };
 
 var onPopupClose = function () {
@@ -343,13 +329,8 @@ var onPopupClose = function () {
   var popupClose = mapCard.querySelector('.popup__close');
   mapCard.classList.add('hidden');
   deactivatePin(mapPins);
-  popupClose.addEventListener('click', onPopupClose);
-};
 
-var onPinKeyEnter = function (event) {
-  if (event.keyCode === ENTER_KEYCODE) {
-    onPinClick(event);
-  }
+  popupClose.addEventListener('click', onPopupClose);
 };
 
 var onKeyEscPress = function (event) {
@@ -366,11 +347,10 @@ var loadPage = function () {
     addClass(noticeForm, 'notice__form--disabled');
     setAttributeForm(fieldsetNoticeForm);
   }
-};
 
-var interactiveRenderPin = function () {
-  loadPage();
+  fillOffers();
+
   mapPinMain.addEventListener('mouseup', onPinMainClick);
 };
 
-interactiveRenderPin();
+loadPage();
