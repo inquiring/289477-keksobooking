@@ -54,12 +54,10 @@ var map = document.querySelector('.map');
 var mapFiltersContainer = map.querySelector('.map__filters-container');
 // Найдем шаблон, который мы будем копировать (только из map__card)
 var offerTemplate = document.querySelector('template').content.querySelector('.map__card');
-// var offersFragment = document.createDocumentFragment();
 
 // Создание фрагмента документа и заполнение его разметкой по шаблону
 // Данный фрагмент создает на карте пины (<button><img></button>)
 var mapPins = map.querySelector('.map__pins');
-// var pinsFragment = document.createDocumentFragment();
 
 // Функция, возвращает случайное целое число между min и max(включительно)
 // min - минимально допустимое число
@@ -202,7 +200,6 @@ var createPin = function () {
   for (var i = 1; i < OFFERS_COUNT; i++) {
     var buttonPin = document.createElement('button');
     buttonPin.className = 'map__pin';
-    // buttonPin.data = i;
     buttonPin.setAttribute('data-num', i);
     buttonPin.setAttribute('tabinex', '0');
     var pinShiftX = 20; // смещение пина по X с учетом его размеров (в px)
@@ -214,7 +211,7 @@ var createPin = function () {
     imgPin.src = offers[i].author.avatar;
     imgPin.width = 40;
     imgPin.height = 40;
-    // imgPin.draggable = false; // нельзя перетащить элемент
+    imgPin.draggable = false; // нельзя перетащить элемент
 
     buttonPin.appendChild(imgPin);
     pinFragment.appendChild(buttonPin);
@@ -287,6 +284,7 @@ var deactivatePin = function (element) {
   }
 };
 
+//  ---- ОБРАБОТЧИКИ СОБЫТИЙ ---  //
 var onPinClick = function (evt) {
 
   evt.preventDefault();
@@ -300,8 +298,6 @@ var onPinClick = function (evt) {
 
 };
 
-
-//  ---- ОБРАБОТЧИКИ СОБЫТИЙ ---  //
 var onPinMainClick = function () {
   // показ карты
   removeClass(map, 'map--faded');
