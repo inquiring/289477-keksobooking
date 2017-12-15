@@ -392,47 +392,20 @@ var validateForm = function () {
     }
   };
 
-  type.addEventListener('change', function (evt) {
-
-    var bungaloMinPrice = 0;
-    var flatMinPrice = 1000;
-    var houseMinPrice = 5000;
-    var palaceMinPrice = 10000;
-
-    switch (evt.target.value) {
-      case 'bungalo':
-        price.min = bungaloMinPrice;
-        break;
-      case 'flat':
-        price.min = flatMinPrice;
-        break;
-      case 'house':
-        price.min = houseMinPrice;
-        break;
-      case 'palace':
-        price.min = palaceMinPrice;
-        break;
-    }
-  });
-
-  var setGuestInRooms = function (evt) {
-    var quantityRooom = evt.target;
-
-    switch (quantityRooom.value) {
-      case '1':
-        capasityGuest.value = 1;
-        break;
-      case '2':
-        capasityGuest.value = 2;
-        break;
-      case '3':
-        capasityGuest.value = 3;
-        break;
-      case '100':
-        capasityGuest.value = 0;
-        break;
-    }
+  var ROOMS_CAPACITY = {
+    '1': ['1'],
+    '2': ['2', '1'],
+    '3': ['3', '2', '1'],
+    '100': ['0']
   };
+  var roomNumberChangeHandler = function () {
+    if (capacity.options.length > 0) {
+      [].forEach.call(capacity.options, function (item) {
+        item.selected = (ROOMS_CAPACITY[roomNumber.value][0] === item.value) ? true : false;
+        item.hidden = (ROOMS_CAPACITY[roomNumber.value].indexOf(item.value) >= 0) ? false : true;
+      });
+    }
+  }
   /*
   valid: false // Поле валидно
   customError: false // Установленно специальное сообщение ошибки
@@ -470,7 +443,7 @@ var validateForm = function () {
   timein.addEventListener('change', syncTimeOfArrive);
   timeout.addEventListener('change', syncTimeOfArrive);
   type.addEventListener('change', syncHousungMinPrice);
-  roomNumber.addEventListener('change', setGuestInRooms);
+  roomNumber.addEventListener('change', roomNumberChangeHandler);
   submitForm.addEventListener('submit', checkValidity);
 };
 
