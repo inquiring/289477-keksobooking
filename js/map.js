@@ -350,3 +350,124 @@ var loadPage = function () {
 };
 
 loadPage();
+
+// Сценарии взаимодействия пользователя с формой отправки данных
+var validateForm = function () {
+  var form = document.querySelector('.notice__form');
+
+  var timein = form.querySelector('select#timein');
+  var timeout = form.querySelector('select#timeout');
+  var type = form.querySelector('select#type');
+  var price = form.querySelector('input#price');
+  var submitForm = form.querySelector('.form__submit');
+  var roomNumber = form.querySelector('select#room_number');
+  var capasityGuest = form.querySelector('select#capacity');
+  var inputs = form.querySelectorAll('input');
+
+  // синхронизация времени прибытия
+  var syncTimeOfArrive = function (evt) {
+    timeout.value = evt.target.value;
+    timein.value = evt.target.value;
+  };
+
+  // Значение поля «Тип жилья» синхронизировано с минимальной ценой
+  var syncHousungMinPrice = function (evt) {
+    switch (evt.target.value) {
+      case 'flat':
+        price.value = 1000;
+        break;
+      case 'bungalo':
+        price.value = 0;
+        break;
+      case 'house':
+        price.value = 5000;
+        break;
+      case 'palace':
+        price.value = 10000;
+        break;
+    }
+  };
+
+  type.addEventListener('change', function (evt) {
+
+    var bungaloMinPrice = 0;
+    var flatMinPrice = 1000;
+    var houseMinPrice = 5000;
+    var palaceMinPrice = 10000;
+
+    switch (evt.target.value) {
+      case 'bungalo':
+        price.min = bungaloMinPrice;
+        break;
+      case 'flat':
+        price.min = flatMinPrice;
+        break;
+      case 'house':
+        price.min = houseMinPrice;
+        break;
+      case 'palace':
+        price.min = palaceMinPrice;
+        break;
+    }
+  });
+
+  var setGuestInRooms = function (evt) {
+    var quantityRooom = evt.target;
+
+    switch (quantityRooom.value) {
+      case '1':
+        capasityGuest.value = 1;
+        break;
+      case '2':
+        capasityGuest.value = 2;
+        break;
+      case '3':
+        capasityGuest.value = 3;
+        break;
+      case '100':
+        capasityGuest.value = 0;
+        break;
+    }
+  };
+  /*
+  valid: false // Поле валидно
+  customError: false // Установленно специальное сообщение ошибки
+  patternMismatch: false // Значение не удовлетворяет шаблону, установленному в атрибуте pattern
+  rangeOverflow: false // Значение превосходит атрибут max
+  rangeUnderflow: true // Значение меньше атрибута min
+  stepMismatch: true // Значение не соответствует указаному шагу
+  tooLong: false // Значение слишком длинное
+  tooShort: false // Значение слишком короткое
+  typeMismatch: false // Значение не соответствует указаному атрибуту type
+  valueMissing: false // Отсутствует обязательное значение
+  */
+  var checkValidity = function () {
+    for (var i = 0; i < inputs.length; i++) {
+      var userNameInput = inputs[i];
+
+      if (userNameInput.validity.tooShort) {
+        userNameInput.setCustomValidity('Имя должно состоять минимум из 30-ти символов');
+
+      } else if (userNameInput.validity.tooLong) {
+        userNameInput.setCustomValidity('Имя не должно превышать 100-ти символов');
+
+      } else if (userNameInput.validity.valueMissing) {
+        userNameInput.setCustomValidity('Отсутствует обязательное значение');
+
+      } else if (userNameInput.validity.rangeOverflow) {
+        userNameInput.setCustomValidity('Не соответствует максимальному значению');
+
+      } else if (userNameInput.validity.rangeUnderflow) {
+        userNameInput.setCustomValidity('Не соответствует минимальному значению');
+      }
+    }
+  };
+
+  timein.addEventListener('change', syncTimeOfArrive);
+  timeout.addEventListener('change', syncTimeOfArrive);
+  type.addEventListener('change', syncHousungMinPrice);
+  roomNumber.addEventListener('change', setGuestInRooms);
+  submitForm.addEventListener('submit', checkValidity);
+};
+
+validateForm();
