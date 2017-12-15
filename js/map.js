@@ -374,16 +374,20 @@ var validateForm = function () {
   var syncHousungMinPrice = function (evt) {
     switch (evt.target.value) {
       case 'flat':
-        price.value = 1000;
+        price.placeholder = '1000';
+        price.min = '1000';
         break;
       case 'bungalo':
-        price.value = 0;
+        price.placeholder = '0';
+        price.min = '0';
         break;
       case 'house':
-        price.value = 5000;
+        price.placeholder = '5000';
+        price.min = '5000';
         break;
       case 'palace':
-        price.value = 10000;
+        price.placeholder = '10000';
+        price.min = '10000';
         break;
     }
   };
