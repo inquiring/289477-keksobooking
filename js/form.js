@@ -4,6 +4,8 @@
 
 // Сценарии взаимодействия пользователя с формой отправки данных
 (function () {
+
+
   var form = document.querySelector('.notice__form');
 
   var timein = form.querySelector('select#timein');

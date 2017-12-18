@@ -16,6 +16,15 @@
       ru: 'Дом'
     }
   };
+  // Функция, удаляющая все дочерние элементы (теги) заданного родительского узла
+  var cleanupChildNodes = function(parentNode) {
+    var childNodes = parentNode.querySelectorAll('*');
+
+    for (var i = 0; i < childNodes.length; i++) {
+      parentNode.removeChild(childNodes[i]);
+    }
+  };
+
   // Функция добавления доступного удобства в квартире
   var featureAdd = function(array) {
     var arrayLength = array.length;
