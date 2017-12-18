@@ -5,7 +5,6 @@
 // Сценарии взаимодействия пользователя с формой отправки данных
 (function () {
 
-
   var form = document.querySelector('.notice__form');
 
   var timein = form.querySelector('select#timein');
@@ -14,7 +13,7 @@
   var price = form.querySelector('input#price');
   var submitForm = form.querySelector('.form__submit');
   var roomNumber = form.querySelector('select#room_number');
-  var capasityGuest = form.querySelector('select#capacity');
+  var capacity = form.querySelector('select#capacity');
   var inputs = form.querySelectorAll('input');
 
   // синхронизация времени прибытия
@@ -58,7 +57,8 @@
         item.hidden = (ROOMS_CAPACITY[roomNumber.value].indexOf(item.value) >= 0) ? false : true;
       });
     }
-  }
+  };
+
   /*
   valid: false // Поле валидно
   customError: false // Установленно специальное сообщение ошибки

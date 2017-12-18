@@ -3,9 +3,9 @@
 // data.js — модуль, который создает данные
 
 
-(function() {
+(function () {
 
-  window.OFFERS_COUNT = 8;
+  var OFFERS_COUNT = 8;
 
   // Массив — Заголовки объявлений
   var OFFERS_TITLES = [
@@ -46,13 +46,13 @@
   // Функция, возвращает случайное целое число между min и max(включительно)
   // min - минимально допустимое число
   // max - максимально допустимое число
-  var getRandomInteger = function(min, max) {
+  var getRandomInteger = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
-  var getRandomFeatures = function() {
+  var getRandomFeatures = function () {
     var arr = [];
-    OFFER_FEATURES.forEach(function(item) {
+    OFFER_FEATURES.forEach(function (item) {
       var isPush = getRandomInteger(0, 1);
       if (isPush === 1) {
         arr.push(item);
@@ -66,8 +66,6 @@
 
 
   // Главная функция, возвращает массив из 8 сгенерированных объектов с готовыми предложениями по недвижимости
-
-  window.offers = fillOffers(OFFERS_COUNT);
 
   function fillOffers(expectedNumber) {
     var requestedOffers = [];
@@ -115,5 +113,11 @@
     }
 
     return requestedOffers;
+  }
+
+  window.data = {
+    offersCount: OFFERS_COUNT,
+    offers: fillOffers(OFFERS_COUNT)
   };
+
 })();

@@ -2,7 +2,7 @@
 
 // card.js — модуль для отрисовки элемента на карточке
 
-(function() {
+(function () {
   // Найдем шаблон, который мы будем копировать (только из map__card)
   var offerTemplate = document.querySelector('template').content.querySelector('.map__card');
   var TYPES = {
@@ -17,7 +17,7 @@
     }
   };
   // Функция, удаляющая все дочерние элементы (теги) заданного родительского узла
-  var cleanupChildNodes = function(parentNode) {
+  var cleanupChildNodes = function (parentNode) {
     var childNodes = parentNode.querySelectorAll('*');
 
     for (var i = 0; i < childNodes.length; i++) {
@@ -26,7 +26,7 @@
   };
 
   // Функция добавления доступного удобства в квартире
-  var featureAdd = function(array) {
+  var featureAdd = function (array) {
     var arrayLength = array.length;
     var featuresFragment = document.createDocumentFragment();
 
@@ -59,7 +59,7 @@
     }
     return featuresFragment;
   };
-  window.renderOffer = function(data) {
+  window.renderOffer = function (data) {
 
     var offerElement = offerTemplate.cloneNode(true);
 

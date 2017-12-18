@@ -2,7 +2,7 @@
 
 // data.js — модуль, который создает данные
 
-(function() {
+(function () {
 
   var ESC_KEYCODE = 27;
 
@@ -22,36 +22,36 @@
   var fieldsetNoticeForm = noticeForm.querySelectorAll('fieldset');
 
   // функция удаления класса
-  var removeClass = function(element, className) {
+  var removeClass = function (element, className) {
     return element.classList.remove(className);
   };
   // функция добавления класса
-  var addClass = function(element, className) {
+  var addClass = function (element, className) {
     return element.classList.add(className);
   };
 
   // функция добавления атрибута
-  var setAttributeForm = function(elements) {
+  var setAttributeForm = function (elements) {
     for (var i = 0; i < elements.length; i++) {
       elements[i].disabled = true;
     }
   };
 
   // функция удаления атрибута
-  var removeAttributeForm = function(elements) {
+  var removeAttributeForm = function (elements) {
     for (var i = 0; i < elements.length; i++) {
       elements[i].disabled = false;
     }
   };
 
   // получение номера из data - атрибута
-  var getDataNum = function(dataNum) {
+  var getDataNum = function (dataNum) {
     return parseInt(dataNum.data, 10);
   };
 
-  var renderOfferPin = function(number) {
+  var renderOfferPin = function (number) {
 
-    var offer = renderOffer(offers[number]);
+    var offer = window.card.renderOffer(window.data.offers[number]);
 
     map.insertBefore(offer, mapFiltersContainer);
 
@@ -62,14 +62,14 @@
     document.addEventListener('keydown', onKeyEscPress);
   };
 
-  var removeOfferPin = function() {
+  var removeOfferPin = function () {
     var controlPanels = map.querySelectorAll('article');
     for (var i = controlPanels.length - 1; i >= 0; i--) {
       map.removeChild(controlPanels[i]);
     }
   };
 
-  var deactivatePin = function(element) {
+  var deactivatePin = function (element) {
     var statusPin = element.querySelector('.map__pin--active');
 
     if (statusPin) {
@@ -80,7 +80,7 @@
   };
 
   //  ---- ОБРАБОТЧИКИ СОБЫТИЙ ---  //
-  var onPinClick = function(evt) {
+  var onPinClick = function (evt) {
 
     evt.preventDefault();
     var pin = evt.currentTarget;
@@ -93,7 +93,7 @@
 
   };
 
-  var onPinMainClick = function() {
+  var onPinMainClick = function () {
     // показ карты
     removeClass(map, 'map--faded');
     // активация формы (убирается opacity 0.3)
@@ -101,7 +101,7 @@
     // активация полей формы
     removeAttributeForm(fieldsetNoticeForm);
     // в блок mapPins добавляются Пины
-    mapPins.appendChild(createPin());
+    mapPins.appendChild(window.createPin());
 
     // найти и записать в переменную все "map__pin"
     var pinElements = mapPins.querySelectorAll('.map__pin:not(map__pin--main)');
@@ -115,7 +115,7 @@
     mapPinMain.removeEventListener('mouseup', onPinMainClick);
   };
 
-  var onPopupClose = function() {
+  var onPopupClose = function () {
     var mapCard = document.querySelector('.map__card');
     var popupClose = mapCard.querySelector('.popup__close');
     mapCard.classList.add('hidden');
@@ -124,14 +124,14 @@
     popupClose.addEventListener('click', onPopupClose);
   };
 
-  var onKeyEscPress = function(event) {
+  var onKeyEscPress = function (event) {
     if (event.keyCode === ESC_KEYCODE) {
       onPopupClose();
       document.removeEventListener('keydown', onKeyEscPress);
     }
   };
 
-  var loadPage = function() {
+  var loadPage = function () {
     if (noticeForm.classList.contains === 'notice__form--disabled') {
       setAttributeForm(fieldsetNoticeForm);
     } else {
