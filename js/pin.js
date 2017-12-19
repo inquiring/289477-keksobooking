@@ -28,6 +28,7 @@
     }
     return pinFragment;
   };
+
   window.pin = {
     createPin: createPin()
   };

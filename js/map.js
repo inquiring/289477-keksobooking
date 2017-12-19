@@ -143,15 +143,15 @@
   };
 
   loadPage();
-
+  //
+  var coords = document.querySelector('#address');
+  var setInitialPosition = function () {
+    var styles = window.getComputedStyle(mapPinMain);
+    coords.value = 'x: ' + parseInt(styles.left, 10) + ', y: ' + parseInt(styles.top, 10);
+  };
+  setInitialPosition();
 
   mapPinMain.addEventListener('mousedown', function (evt) {
-    var coords = document.querySelector('#address');
-    var setInitialPosition = function () {
-
-       var styles = window.getComputedStyle(mapPinMain);
-       coords.value = 'x: ' + parseInt(styles.left, 10) + ', y: ' + parseInt(styles.top, 10);
-    };
 
     evt.preventDefault();
 
@@ -165,8 +165,8 @@
       moveEvt.preventDefault();
       var minIntervalY = 100;
       var maxIntervalY = 500;
-      var minIntervalX = 100;
-      var maxIntervalX = 1200;
+      var minIntervalX = 300;
+      var maxIntervalX = 1400;
 
       if ((moveEvt.clientY > minIntervalY && moveEvt.clientY < maxIntervalY) && (moveEvt.clientX > minIntervalX && moveEvt.clientX < maxIntervalX)) {
         var shift = {
@@ -184,20 +184,16 @@
     };
     var onMouseUp = function (upEvt) {
 
+      upEvt.preventDefault();
+      var address = document.querySelector('#address');
+      var addressPoint = ['x: ' + upEvt.clientX, 'y: ' + upEvt.clientY];
+      address.value = addressPoint.join(', ');
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
 
-
-
-     upEvt.preventDefault();
-     var address = document.querySelector('#address');
-     var addressPoint = ['x: ' + upEvt.clientX, 'y: ' + upEvt.clientY];
-     address.value = addressPoint.join(', ');
-     document.removeEventListener('mousemove', onMouseMove);
-     document.removeEventListener('mouseup', onMouseUp);
-   };
-   document.addEventListener('mousemove', onMouseMove);
-   document.addEventListener('mouseup', onMouseUp);
-
- });
-
+  });
 
 })();
