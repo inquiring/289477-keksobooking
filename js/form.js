@@ -98,4 +98,6 @@
   type.addEventListener('change', syncHousungMinPrice);
   roomNumber.addEventListener('change', roomNumberChangeHandler);
   submitForm.addEventListener('submit', checkValidity);
+
+
 })();

@@ -145,8 +145,13 @@
   loadPage();
 
   //
+
+  var inputAddress = document.querySelector('input#address');
+  inputAddress.value = 'x: 635, y: 95';
+
   mapPinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
+
     // координаты точки, с которой мы начали перемещать pin
     var startCoords = {
       x: evt.clientX,
