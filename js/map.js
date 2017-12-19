@@ -51,7 +51,7 @@
 
   var renderOfferPin = function (number) {
 
-    var offer = window.card.renderOffer(window.data.offers[number]);
+    var offer = window.renderOffer(window.data.offers[number]);
 
     map.insertBefore(offer, mapFiltersContainer);
 
@@ -101,7 +101,7 @@
     // активация полей формы
     removeAttributeForm(fieldsetNoticeForm);
     // в блок mapPins добавляются Пины
-    mapPins.appendChild(window.createPin());
+    mapPins.appendChild(window.pin.createPin);
 
     // найти и записать в переменную все "map__pin"
     var pinElements = mapPins.querySelectorAll('.map__pin:not(map__pin--main)');

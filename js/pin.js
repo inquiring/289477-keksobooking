@@ -4,10 +4,10 @@
 
 // Функция, создает на карте пины (<button><img></button>)
 (function () {
-  window.createPin = function () {
+  var createPin = function () {
 
     var pinFragment = document.createDocumentFragment();
-    for (var i = 1; i < window.data.OFFERS_COUNT; i++) {
+    for (var i = 1; i < window.data.offersCount; i++) {
       var buttonPin = document.createElement('button');
       buttonPin.className = 'map__pin';
       buttonPin.setAttribute('data-num', i);
@@ -27,6 +27,9 @@
       pinFragment.appendChild(buttonPin);
     }
     return pinFragment;
+  };
+  window.pin = {
+    createPin: createPin()
   };
 
 })();
