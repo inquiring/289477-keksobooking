@@ -144,12 +144,15 @@
 
   loadPage();
 
-  //
-
-  var inputAddress = document.querySelector('input#address');
-  inputAddress.value = 'x: 635, y: 95';
 
   mapPinMain.addEventListener('mousedown', function (evt) {
+    var coords = document.querySelector('#address');
+    var setInitialPosition = function () {
+
+       var styles = window.getComputedStyle(mapPinMain);
+       coords.value = 'x: ' + parseInt(styles.left, 10) + ', y: ' + parseInt(styles.top, 10);
+    };
+
     evt.preventDefault();
 
     // координаты точки, с которой мы начали перемещать pin
@@ -180,17 +183,21 @@
       }
     };
     var onMouseUp = function (upEvt) {
-      upEvt.preventDefault();
-      var address = document.querySelector('#address');
-      var addressPoint = ['x: ' + upEvt.clientX, 'y: ' + upEvt.clientY];
-      address.value = addressPoint.join(', ');
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
 
-  });
+
+
+
+     upEvt.preventDefault();
+     var address = document.querySelector('#address');
+     var addressPoint = ['x: ' + upEvt.clientX, 'y: ' + upEvt.clientY];
+     address.value = addressPoint.join(', ');
+     document.removeEventListener('mousemove', onMouseMove);
+     document.removeEventListener('mouseup', onMouseUp);
+   };
+   document.addEventListener('mousemove', onMouseMove);
+   document.addEventListener('mouseup', onMouseUp);
+
+ });
 
 
 })();
