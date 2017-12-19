@@ -155,7 +155,12 @@
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
-      if (moveEvt.clientY > 100 && moveEvt.clientY < 500) {
+      var minIntervalY = 100;
+      var maxIntervalY = 500;
+      var minIntervalX = 100;
+      var maxIntervalX = 1200;
+
+      if ((moveEvt.clientY > minIntervalY && moveEvt.clientY < maxIntervalY) && (moveEvt.clientX > minIntervalX && moveEvt.clientX < maxIntervalX)) {
         var shift = {
           x: startCoords.x - moveEvt.clientX,
           y: startCoords.y - moveEvt.clientY
