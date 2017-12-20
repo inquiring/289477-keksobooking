@@ -9,9 +9,6 @@
   var TYPES_OF_HOUSING = ['flat', 'bungalo', 'house', 'palace'];
   var PRICE_OF_HOUSING = ['1000', '0', '5000', '10000'];
 
-  var ROOMS = ['1', '2', '3', '100'];
-  var CAPACITYS = ['1', '2', '3', '0'];
-
   var form = document.querySelector('.notice__form');
 
   var timein = form.querySelector('select#timein');
@@ -25,60 +22,33 @@
 
   // синхронизация времени прибытия
   var syncTimeOfArrive = function (elem1, elem2, arr1, arr2) {
-    if (arr1.length === arr2.length) {
-      for (var i = 0; i < arr1.length; i++) {
-        if (elem1.value === arr1[i]) {
-          elem2.value = arr2[i];
-        }
-      }
-    }
+    var selectedIndex = arr1.indexOf(elem1.value);
+    elem2.value = arr2[selectedIndex];
   };
 
 
   // Значение поля «Тип жилья» синхронизировано с минимальной ценой
   var syncHousungMinPrice = function (elem1, elem2, arr1, arr2) {
-    if (arr1.length === arr2.length) {
-      for (var i = 0; i < arr1.length; i++) {
-        switch (elem1.value) {
-          case (arr1[i]): elem2.value = arr2[i];
-            break;
-        }
-        switch (elem1.value) {
-          case (arr1[i]):
-            elem2.min = arr2[i];
-            break;
-        }
-      }
-    }
+    var selectedIndex = arr1.indexOf(elem1.value);
+    elem2.min = arr2[selectedIndex];
+    elem2.placeholder = arr2[selectedIndex];
   };
 
-  // var ROOMS_CAPACITY = {
-  //   '1': ['1'],
-  //   '2': ['2', '1'],
-  //   '3': ['3', '2', '1'],
-  //   '100': ['0']
-  // };
-  // var roomNumberChangeHandler = function () {
-  //   if (capacity.options.length > 0) {
-  //     [].forEach.call(capacity.options, function (item) {
-  //       item.selected = (ROOMS_CAPACITY[roomNumber.value][0] === item.value) ? true : false;
-  //       item.hidden = (ROOMS_CAPACITY[roomNumber.value].indexOf(item.value) >= 0) ? false : true;
-  //     });
-  //   }
-  // };
-
-  var roomNumberChangeHandler = function (elem1, elem2, arr1, arr2) {
-    if (arr1.length === arr2.length) {
-      for (var i = 0; i < arr1.length; i++) {
-        switch (elem1.value) {
-          case arr1[i]:
-            elem2.value = arr2[i];
-            break;
-        }
-      }
+  // Значение поля "кол-во комнат синхронизированно с ДОПУСТИМЫМ количеством мест"
+  var ROOMS_CAPACITY = {
+    '1': ['1'],
+    '2': ['2', '1'],
+    '3': ['3', '2', '1'],
+    '100': ['0']
+  };
+  var roomNumberChangeHandler = function () {
+    if (capacity.options.length > 0) {
+      [].forEach.call(capacity.options, function (item) {
+        item.selected = (ROOMS_CAPACITY[roomNumber.value][0] === item.value) ? true : false;
+        item.hidden = (ROOMS_CAPACITY[roomNumber.value].indexOf(item.value) >= 0) ? false : true;
+      });
     }
   };
-
 
   /*
   valid: false // Поле валидно
@@ -126,10 +96,7 @@
     window.synchronizeFields(type, price, TYPES_OF_HOUSING, PRICE_OF_HOUSING, syncHousungMinPrice);
   });
 
-  roomNumber.addEventListener('change', function () {
-    window.synchronizeFields(roomNumber, capacity, ROOMS, CAPACITYS, roomNumberChangeHandler);
-  });
-
+  roomNumber.addEventListener('change', roomNumberChangeHandler);
 
   submitForm.addEventListener('submit', checkValidity);
 
