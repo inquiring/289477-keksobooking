@@ -4,6 +4,10 @@
 
 // Сценарии взаимодействия пользователя с формой отправки данных
 (function () {
+  var OFFER_TIMES = ['12:00', '13:00', '14:00'];
+
+  var TYPES_OF_HOUSING = ['flat', 'bungalo', 'house', 'palace'];
+  var PRICE_OF_HOUSING = ['1000', '0', '5000', '10000'];
 
   var form = document.querySelector('.notice__form');
 
@@ -17,33 +21,20 @@
   var inputs = form.querySelectorAll('input');
 
   // синхронизация времени прибытия
-  var syncTimeOfArrive = function (evt) {
-    timeout.value = evt.target.value;
-    timein.value = evt.target.value;
+  var syncTimeOfArrive = function (elem1, elem2, arr1, arr2) {
+    var selectedIndex = arr1.indexOf(elem1.value);
+    elem2.value = arr2[selectedIndex];
   };
+
 
   // Значение поля «Тип жилья» синхронизировано с минимальной ценой
-  var syncHousungMinPrice = function (evt) {
-    switch (evt.target.value) {
-      case 'flat':
-        price.placeholder = '1000';
-        price.min = '1000';
-        break;
-      case 'bungalo':
-        price.placeholder = '0';
-        price.min = '0';
-        break;
-      case 'house':
-        price.placeholder = '5000';
-        price.min = '5000';
-        break;
-      case 'palace':
-        price.placeholder = '10000';
-        price.min = '10000';
-        break;
-    }
+  var syncHousungMinPrice = function (elem1, elem2, arr1, arr2) {
+    var selectedIndex = arr1.indexOf(elem1.value);
+    elem2.min = arr2[selectedIndex];
+    elem2.placeholder = arr2[selectedIndex];
   };
 
+  // Значение поля "кол-во комнат синхронизированно с ДОПУСТИМЫМ количеством мест"
   var ROOMS_CAPACITY = {
     '1': ['1'],
     '2': ['2', '1'],
@@ -93,10 +84,20 @@
     }
   };
 
-  timein.addEventListener('change', syncTimeOfArrive);
-  timeout.addEventListener('change', syncTimeOfArrive);
-  type.addEventListener('change', syncHousungMinPrice);
+  timein.addEventListener('change', function () {
+    window.synchronizeFields(timein, timeout, OFFER_TIMES, OFFER_TIMES, syncTimeOfArrive);
+  });
+
+  timeout.addEventListener('change', function () {
+    window.synchronizeFields(timein, timeout, OFFER_TIMES, OFFER_TIMES, syncTimeOfArrive);
+  });
+
+  type.addEventListener('change', function () {
+    window.synchronizeFields(type, price, TYPES_OF_HOUSING, PRICE_OF_HOUSING, syncHousungMinPrice);
+  });
+
   roomNumber.addEventListener('change', roomNumberChangeHandler);
+
   submitForm.addEventListener('submit', checkValidity);
 
 
