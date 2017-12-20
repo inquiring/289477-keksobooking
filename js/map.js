@@ -4,15 +4,9 @@
 
 (function () {
 
-  var ESC_KEYCODE = 27;
-
-  // Получение и отображение на сайте карты с пользовательскими пинами
   var map = document.querySelector('.map');
-  var mapFiltersContainer = map.querySelector('.map__filters-container');
-
-  // Создание фрагмента документа и заполнение его разметкой по шаблону
-  // Данный фрагмент создает на карте пины (<button><img></button>)
   var mapPins = map.querySelector('.map__pins');
+
 
   // Получение пользовательского пина
   var mapPinMain = document.querySelector('.map__pin--main');
@@ -49,19 +43,6 @@
     return parseInt(dataNum.data, 10);
   };
 
-  var renderOfferPin = function (number) {
-
-    var offer = window.renderOffer(window.data.offers[number]);
-
-    map.insertBefore(offer, mapFiltersContainer);
-
-
-    var mapCard = document.querySelector('.map__card');
-    var popupClose = mapCard.querySelector('.popup__close');
-    popupClose.addEventListener('click', onPopupClose);
-    document.addEventListener('keydown', onKeyEscPress);
-  };
-
   var removeOfferPin = function () {
     var controlPanels = map.querySelectorAll('article');
     for (var i = controlPanels.length - 1; i >= 0; i--) {
@@ -69,7 +50,7 @@
     }
   };
 
-  var deactivatePin = function (element) {
+  window.deactivatePin = function (element) {
     var statusPin = element.querySelector('.map__pin--active');
 
     if (statusPin) {
@@ -89,7 +70,7 @@
 
     addClass(pin, 'map__pin--active');
 
-    renderOfferPin(getDataNum(pin));
+    window.showCard(getDataNum(pin));
 
   };
 
@@ -115,21 +96,6 @@
     mapPinMain.removeEventListener('mouseup', onPinMainClick);
   };
 
-  var onPopupClose = function () {
-    var mapCard = document.querySelector('.map__card');
-    var popupClose = mapCard.querySelector('.popup__close');
-    mapCard.classList.add('hidden');
-    deactivatePin(mapPins);
-
-    popupClose.addEventListener('click', onPopupClose);
-  };
-
-  var onKeyEscPress = function (event) {
-    if (event.keyCode === ESC_KEYCODE) {
-      onPopupClose();
-      document.removeEventListener('keydown', onKeyEscPress);
-    }
-  };
 
   var loadPage = function () {
     if (noticeForm.classList.contains === 'notice__form--disabled') {
