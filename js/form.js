@@ -4,6 +4,13 @@
 
 // Сценарии взаимодействия пользователя с формой отправки данных
 (function () {
+  var OFFER_TIMES = ['12:00', '13:00', '14:00'];
+
+  var TYPES_OF_HOUSING = ['flat', 'bungalo', 'house', 'palace'];
+  var PRICE_OF_HOUSING = ['1000', '0', '5000', '10000'];
+
+  var ROOMS = ['1', '2', '3', '100'];
+  var CAPACITYS = ['1', '2', '3', '0'];
 
   var form = document.querySelector('.notice__form');
 
@@ -17,47 +24,61 @@
   var inputs = form.querySelectorAll('input');
 
   // синхронизация времени прибытия
-  var syncTimeOfArrive = function (evt) {
-    timeout.value = evt.target.value;
-    timein.value = evt.target.value;
+  var syncTimeOfArrive = function (elem1, elem2, arr1, arr2) {
+    if (arr1.length === arr2.length) {
+      for (var i = 0; i < arr1.length; i++) {
+        if (elem1.value === arr1[i]) {
+          elem2.value = arr2[i];
+        }
+      }
+    }
   };
+
 
   // Значение поля «Тип жилья» синхронизировано с минимальной ценой
-  var syncHousungMinPrice = function (evt) {
-    switch (evt.target.value) {
-      case 'flat':
-        price.placeholder = '1000';
-        price.min = '1000';
-        break;
-      case 'bungalo':
-        price.placeholder = '0';
-        price.min = '0';
-        break;
-      case 'house':
-        price.placeholder = '5000';
-        price.min = '5000';
-        break;
-      case 'palace':
-        price.placeholder = '10000';
-        price.min = '10000';
-        break;
+  var syncHousungMinPrice = function (elem1, elem2, arr1, arr2) {
+    if (arr1.length === arr2.length) {
+      for (var i = 0; i < arr1.length; i++) {
+        switch (elem1.value) {
+          case (arr1[i]): elem2.value = arr2[i];
+            break;
+        }
+        switch (elem1.value) {
+          case (arr1[i]):
+            elem2.min = arr2[i];
+            break;
+        }
+      }
     }
   };
 
-  var ROOMS_CAPACITY = {
-    '1': ['1'],
-    '2': ['2', '1'],
-    '3': ['3', '2', '1'],
-    '100': ['0']
-  };
-  var roomNumberChangeHandler = function () {
-    if (capacity.options.length > 0) {
-      [].forEach.call(capacity.options, function (item) {
-        item.selected = (ROOMS_CAPACITY[roomNumber.value][0] === item.value) ? true : false;
-        item.hidden = (ROOMS_CAPACITY[roomNumber.value].indexOf(item.value) >= 0) ? false : true;
-      });
+  // var ROOMS_CAPACITY = {
+  //   '1': ['1'],
+  //   '2': ['2', '1'],
+  //   '3': ['3', '2', '1'],
+  //   '100': ['0']
+  // };
+  // var roomNumberChangeHandler = function () {
+  //   if (capacity.options.length > 0) {
+  //     [].forEach.call(capacity.options, function (item) {
+  //       item.selected = (ROOMS_CAPACITY[roomNumber.value][0] === item.value) ? true : false;
+  //       item.hidden = (ROOMS_CAPACITY[roomNumber.value].indexOf(item.value) >= 0) ? false : true;
+  //     });
+  //   }
+  // };
+
+  var roomNumberChangeHandler = function (elem1, elem2, arr1, arr2) {
+    if (arr1.length === arr2.length) {
+      for (var i = 0; i < arr1.length; i++) {
+        switch (elem1.value) {
+          case arr1[i]:
+            elem2.value = arr2[i];
+            break;
+        }
+      }
     }
   };
+
 
   /*
   valid: false // Поле валидно
@@ -93,10 +114,23 @@
     }
   };
 
-  timein.addEventListener('change', syncTimeOfArrive);
-  timeout.addEventListener('change', syncTimeOfArrive);
-  type.addEventListener('change', syncHousungMinPrice);
-  roomNumber.addEventListener('change', roomNumberChangeHandler);
+  timein.addEventListener('change', function () {
+    window.synchronizeFields(timein, timeout, OFFER_TIMES, OFFER_TIMES, syncTimeOfArrive);
+  });
+
+  timeout.addEventListener('change', function () {
+    window.synchronizeFields(timein, timeout, OFFER_TIMES, OFFER_TIMES, syncTimeOfArrive);
+  });
+
+  type.addEventListener('change', function () {
+    window.synchronizeFields(type, price, TYPES_OF_HOUSING, PRICE_OF_HOUSING, syncHousungMinPrice);
+  });
+
+  roomNumber.addEventListener('change', function () {
+    window.synchronizeFields(roomNumber, capacity, ROOMS, CAPACITYS, roomNumberChangeHandler);
+  });
+
+
   submitForm.addEventListener('submit', checkValidity);
 
 

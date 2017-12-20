@@ -66,7 +66,7 @@
     evt.preventDefault();
     var pin = evt.currentTarget;
 
-    deactivatePin(mapPins);
+    window.deactivatePin(mapPins);
 
     addClass(pin, 'map__pin--active');
 
