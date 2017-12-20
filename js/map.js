@@ -139,10 +139,61 @@
       setAttributeForm(fieldsetNoticeForm);
     }
 
-    // fillOffers();
-
     mapPinMain.addEventListener('mouseup', onPinMainClick);
   };
 
   loadPage();
+  //
+  var coords = document.querySelector('#address');
+  var setInitialPosition = function () {
+    var styles = window.getComputedStyle(mapPinMain);
+    coords.value = 'x: ' + parseInt(styles.left, 10) + ', y: ' + parseInt(styles.top, 10);
+  };
+  setInitialPosition();
+
+  mapPinMain.addEventListener('mousedown', function (evt) {
+
+    evt.preventDefault();
+
+    // координаты точки, с которой мы начали перемещать pin
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+      var minIntervalY = 100;
+      var maxIntervalY = 500;
+      var minIntervalX = 300;
+      var maxIntervalX = 1400;
+
+      if ((moveEvt.clientY > minIntervalY && moveEvt.clientY < maxIntervalY) && (moveEvt.clientX > minIntervalX && moveEvt.clientX < maxIntervalX)) {
+        var shift = {
+          x: startCoords.x - moveEvt.clientX,
+          y: startCoords.y - moveEvt.clientY
+        };
+
+        startCoords = {
+          x: moveEvt.clientX,
+          y: moveEvt.clientY
+        };
+        mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
+        mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+      }
+    };
+    var onMouseUp = function (upEvt) {
+
+      upEvt.preventDefault();
+      var address = document.querySelector('#address');
+      var addressPoint = ['x: ' + upEvt.clientX, 'y: ' + upEvt.clientY];
+      address.value = addressPoint.join(', ');
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+
+  });
+
 })();
